@@ -7,62 +7,26 @@ endif
 " Find plugins
 call plug#begin(stdpath('data') . '/plugged')
 
-" Autocomplete
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-let g:deoplete#enable_at_startup = 1
-" Close function preview window
-autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
+" Code completeion engine
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'neoclide/coc-snippets'
+imap <C-j> <Plug>(coc-snippets-expand-jump)
+Plug 'honza/vim-snippets'
 
-" Linting
-Plug 'w0rp/ale'
+Plug 'neoclide/coc-rls'
+Plug 'josa42/coc-go'
+Plug 'neoclide/coc-python'
+Plug 'clangd/coc-clangd'
 
-" Snippets
-Plug 'Shougo/neosnippet.vim'
-Plug 'Shougo/neosnippet-snippets'
-
-let g:neosnippet#enable_completed_snippet = 1
-
-" Plugin key-mappings.
-" Note: It must be "imap" and "smap".  It uses <Plug> mappings.
-imap <C-k>     <Plug>(neosnippet_expand_or_jump)
-smap <C-k>     <Plug>(neosnippet_expand_or_jump)
-xmap <C-k>     <Plug>(neosnippet_expand_target)
-
-" SuperTab like snippets behavior.
-" Note: It must be "imap" and "smap".  It uses <Plug> mappings.
-"imap <expr><TAB>
-" \ pumvisible() ? "\<C-n>" :
-" \ neosnippet#expandable_or_jumpable() ?
-" \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
-smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
-\ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
-
-" For conceal markers.
-if has('conceal')
-  set conceallevel=2 concealcursor=niv
-endif
-
-Plug 'zchee/deoplete-clang'
-
-" Go Formatting & Autocomplete
-Plug 'zchee/deoplete-go', { 'do': 'make' }
-Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
-let g:go_metalinter_autosave = 1
-" Auto import go packages
-let g:go_fmt_command = "goimports"
-" Get type info of go variable
-autocmd FileType go nnoremap <buffer> <leader>t :GoInfo<CR>
-
-" Python Autocomplete
-Plug 'zchee/deoplete-jedi'
 
 " fzf fuzzy finding
 Plug 'junegunn/fzf.vim'
-" Need fzf installed
-Plug '/usr/local/opt/fzf'
+Plug '/usr/local/opt/fzf' " Need fzf installed
+map <C-f> :Files<CR>
+map <C-c> :Commits<CR>
 nnoremap <silent> <Leader>, :Buffers<CR>
 nnoremap <silent> <Leader>/ :History/<CR>
-nnoremap <silent> <Leader><Space> :Lines<CR><Paste>
+nnoremap <silent> <Leader><Space> :Lines<CR>
 
 " Color schemes
 Plug 'ajmwagar/vim-deus'
@@ -70,16 +34,16 @@ Plug 'ajmwagar/vim-deus'
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
 
+Plug 'majutsushi/tagbar'
+nmap <F8> :TagbarToggle<CR>
+
+" Netrw is cool, but not very comfortable
 Plug 'scrooloose/nerdtree'
 map <C-n> :NERDTreeToggle<CR>
-" Close vim if NERDTree is the only thing open
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 let g:NERDTreeDirArrowExpandable = '▸'
 let g:NERDTreeDirArrowCollapsible = '▾'
 
 Plug 'scrooloose/nerdcommenter' 
-
-Plug 'tpope/vim-surround'
 
 call plug#end()
 
@@ -125,10 +89,6 @@ nnoremap ; :
 nnoremap j gj
 nnoremap k gk
 
-" FZF Binds
-map <C-f> :Files<CR>
-map <C-c> :Commits<CR>
-
 " Folding config
 set foldmethod=indent   
 set foldnestmax=10
@@ -138,20 +98,12 @@ set foldlevel=2
 " Esc in Terminal
 tnoremap <Esc> <C-\><C-n>
 
-" Save and restore vim sessions
-map <F2> :mksession! ./.vim_session <cr> " Quick write session with F2
-map <F3> :source ./.vim_session <cr>     " And load session with F3
-
 " Bind function keys to rerun last command in the terminal they were bound to
 map <leader-F5> map <F5> :call jobsend(b:terminal_job_id, "!!\n\n")<CR>
-
-" Fzf for buffers, history, and lines in open buffers
-nnoremap <silent> <Leader>, :Buffers<CR>
-nnoremap <silent> <Leader>/ :History/<CR>
-nnoremap <silent> <Leader><Space> :Lines<CR>
 
 filetype plugin indent on
 syntax on
 
 " Highlight search results
 set hlsearch
+set clipboard+=unnamedplus
