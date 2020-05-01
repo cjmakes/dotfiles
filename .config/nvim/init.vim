@@ -1,55 +1,4 @@
-" Install vimplug if not found
-if empty(glob('~/.local/share/nvim/site/autoload/plug.vim'))
-  silent !curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
-endif
-
-" Find plugins
-call plug#begin(stdpath('data') . '/plugged')
-
-" Code completeion engine
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'neoclide/coc-snippets'
-imap <C-j> <Plug>(coc-snippets-expand-jump)
-Plug 'honza/vim-snippets'
-
-Plug 'neoclide/coc-rls'
-Plug 'josa42/coc-go'
-Plug 'neoclide/coc-python'
-Plug 'clangd/coc-clangd'
-
-
-" fzf fuzzy finding
-Plug 'junegunn/fzf.vim'
-Plug '/usr/local/opt/fzf' " Need fzf installed
-map <C-f> :Files<CR>
-map <C-c> :Commits<CR>
-nnoremap <silent> <Leader>, :Buffers<CR>
-nnoremap <silent> <Leader>/ :History/<CR>
-nnoremap <silent> <Leader><Space> :Lines<CR>
-
-" Color schemes
-Plug 'ajmwagar/vim-deus'
-
-Plug 'airblade/vim-gitgutter'
-Plug 'tpope/vim-fugitive'
-
-Plug 'majutsushi/tagbar'
-nmap <F8> :TagbarToggle<CR>
-
-" Netrw is cool, but not very comfortable
-Plug 'scrooloose/nerdtree'
-map <C-n> :NERDTreeToggle<CR>
-let g:NERDTreeDirArrowExpandable = '▸'
-let g:NERDTreeDirArrowCollapsible = '▾'
-
-Plug 'scrooloose/nerdcommenter' 
-
-call plug#end()
-
-
 set termguicolors
-colorscheme deus
 
 highlight OverLength ctermbg=red ctermfg=white
 match OverLength /\%81v.\+/
@@ -107,3 +56,56 @@ syntax on
 " Highlight search results
 set hlsearch
 set clipboard+=unnamedplus
+
+
+
+" Install vimplug if not found
+if empty(glob('~/.local/share/nvim/site/autoload/plug.vim'))
+  silent !curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+" Find plugins
+call plug#begin(stdpath('data') . '/plugged')
+
+" Code completeion engine
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'neoclide/coc-snippets'
+imap <C-j> <Plug>(coc-snippets-expand-jump)
+Plug 'honza/vim-snippets'
+
+Plug 'neoclide/coc-rls'
+Plug 'josa42/coc-go'
+Plug 'neoclide/coc-python'
+Plug 'clangd/coc-clangd'
+
+
+" fzf fuzzy finding
+Plug 'junegunn/fzf.vim'
+Plug '/usr/local/opt/fzf' " Need fzf installed
+map <C-f> :Files<CR>
+map <C-c> :Commits<CR>
+nnoremap <silent> <Leader>, :Buffers<CR>
+nnoremap <silent> <Leader>/ :History/<CR>
+nnoremap <silent> <Leader><Space> :Lines<CR>
+
+" Color schemes
+Plug 'ajmwagar/vim-deus'
+
+Plug 'airblade/vim-gitgutter'
+Plug 'tpope/vim-fugitive'
+
+Plug 'majutsushi/tagbar'
+nmap <F8> :TagbarToggle<CR>
+
+" Netrw is cool, but not very comfortable
+Plug 'scrooloose/nerdtree'
+map <C-n> :NERDTreeToggle<CR>
+let g:NERDTreeDirArrowExpandable = '▸'
+let g:NERDTreeDirArrowCollapsible = '▾'
+
+Plug 'scrooloose/nerdcommenter'
+
+call plug#end()
+
+colorscheme deus

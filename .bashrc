@@ -31,4 +31,5 @@ alias ksrvs='while :; do; o=$(k get services); clear; echo "$o"; sleep 1; done'
 alias kpods='while :; do k get pods; sleep 1; clear; done'
 alias vim="nvim"
 alias idea="_JAVA_AWT_WM_NONREPARENTING=1 idea" #Fixes intellij on sway
+alias userctl="systemctl --user"
 alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME"
