@@ -1,0 +1,50 @@
+# Maintainer: conjones <cj@cjmakes.com>
+pkgname=conjones-base
+pkgver=0.0.1
+pkgrel=1
+pkgdesc="conjones base system packages"
+arch=('any')
+url="https://github.com/cjmakes/system"
+license=('MIT')
+depends=(
+	'sudo'
+	'networkmanager'
+
+	'man-db'
+	'openssh'
+	'neovim'
+	'fzf'
+	'git'
+	'go'
+	'docker'
+	'python'
+	'python-pip'
+
+	'sway'
+	'swaylock'
+	'grim' 'wl-clipboard'
+	'waybar'
+	'xorg-server-xwayland'
+	'rofi'
+	'brightnessctl'
+	'pulseaudio'
+	'pulseaudio-bluetooth'
+	'pulsemixer'
+	'bluez-utils'
+
+	'ttf-droid'
+	'chromium'
+)
+
+source=('sudoers.wheel')
+sha256sums=('7b89a4b8e9e822d51be38514b1609d46a9f046a3e7f62ab1c64bea0c3ab46dc8')
+
+package() {
+	install -Dm 0640 sudoers.wheel "$pkgdir/etc/sudoers.d/wheel"
+}
+
+post_install() {
+	systemctl enable --now networkmanager
+	echo 'alias dotfiles="/usr/bin/git --git-dir=$HOME/.dotfiles.git/ --work-tree=$HOME"' >> $HOME/.bashrc
+	pip install neovim
+}
