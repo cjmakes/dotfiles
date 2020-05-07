@@ -12,7 +12,7 @@ depends=(
 
 	'man-db'
 	'openssh'
-	'neovim'
+	'neovim' 'npm'
 	'fzf'
 	'git'
 	'go'
@@ -22,8 +22,8 @@ depends=(
 
 	'sway'
 	'swaylock'
-	'grim' 'wl-clipboard'
-	'waybar'
+	'grim' 'wl-clipboard' 'slurp'
+	'waybar' 'otf-font-awesome'
 	'xorg-server-xwayland'
 	'rofi'
 	'brightnessctl'
@@ -35,13 +35,6 @@ depends=(
 	'ttf-droid'
 	'chromium'
 )
-
-source=('sudoers.wheel')
-sha256sums=('7b89a4b8e9e822d51be38514b1609d46a9f046a3e7f62ab1c64bea0c3ab46dc8')
-
-package() {
-	install -Dm 0640 sudoers.wheel "$pkgdir/etc/sudoers.d/wheel"
-}
 
 post_install() {
 	systemctl enable --now networkmanager
