@@ -8,9 +8,16 @@ set $down j
 set $up k
 set $right l
 
-set $term termite
+set $term st
+
+font NotoSansMono Medium 12
 
 set $menu "rofi -show combi"
+set $menurun "conjones-menu"
+
+exec fixpipewire.sh
+
+bindsym $mod+c exec rofi -show calc -modi calc -no-show-match -no-sort
 
 ### Output configuration
 
@@ -24,7 +31,7 @@ bindswitch --reload lid:on output $laptop disable
 bindswitch --reload lid:off output $laptop enable
 
 # Scale builtin display to make it readable
-output $laptop scale 2
+output $laptop scale 1
 
 # Style stuff
 gaps inner 5
@@ -81,6 +88,7 @@ bar {
 
     # start your launcher
     bindsym $mod+d exec $menu
+    bindsym $mod+Shift+d exec $menurun
 
     # Drag floating windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.
@@ -219,3 +227,8 @@ bindsym XF86MonBrightnessUp exec brightnessctl s 100+
 
 # Screenshot
 bindsym $mod+Shift+S exec slurp | grim -g - $(date +'screenshot_%Y-%m-%d-%H%M%S.png')
+
+# Open wiki
+bindsym $mod+P exec $term nvim ~/vimwiki/index.md
+
+exec dbus-update-activation-enviornment --systemd WAYLAND_DISPLAY
