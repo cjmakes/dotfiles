@@ -8,14 +8,11 @@ set $down j
 set $up k
 set $right l
 
-set $term st
+set $term alacritty
 
-font NotoSansMono Medium 12
+font FiraCodeMono Medium 12
 
 set $menu "rofi -show combi"
-set $menurun "conjones-menu"
-
-exec fixpipewire.sh
 
 bindsym $mod+c exec rofi -show calc -modi calc -no-show-match -no-sort
 
@@ -31,7 +28,7 @@ bindswitch --reload lid:on output $laptop disable
 bindswitch --reload lid:off output $laptop enable
 
 # Scale builtin display to make it readable
-output $laptop scale 1
+output $laptop scale 1.5
 
 # Style stuff
 gaps inner 5
@@ -61,12 +58,6 @@ input type:touchpad {
     tap enabled
 }
 
-input 1133:16641:Logitech_Rechargeable_Touchpad_T650 {
-  accel_profile adaptive
-  drag enable
-  pointer_accel 0.4
-  click_method button_areas
-}
 
 # bar config
 bar {
@@ -88,7 +79,6 @@ bar {
 
     # start your launcher
     bindsym $mod+d exec $menu
-    bindsym $mod+Shift+d exec $menurun
 
     # Drag floating windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.
@@ -213,6 +203,7 @@ mode "resize" {
     bindsym Return mode "default"
     bindsym Escape mode "default"
 }
+
 bindsym $mod+r mode "resize"
 
 # Multimedia
@@ -222,13 +213,8 @@ bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
 bindsym XF86AudioMicMute exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
 
 # Backlight
-bindsym XF86MonBrightnessDown exec brightnessctl s 100-
-bindsym XF86MonBrightnessUp exec brightnessctl s 100+
+bindsym XF86MonBrightnessDown exec busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateBrightness d -0.02;
+bindsym XF86MonBrightnessUp exec busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateBrightness d +0.02;
 
 # Screenshot
 bindsym $mod+Shift+S exec slurp | grim -g - $(date +'screenshot_%Y-%m-%d-%H%M%S.png')
-
-# Open wiki
-bindsym $mod+P exec $term nvim ~/vimwiki/index.md
-
-exec dbus-update-activation-enviornment --systemd WAYLAND_DISPLAY
