@@ -1,35 +1,31 @@
 require "paq" {
-  "savq/paq-nvim";                  -- Let Paq manage itself
+	"savq/paq-nvim", -- Let Paq manage itself
 
-  'tpope/vim-fugitive';
-  'airblade/vim-gitgutter';
+	-- Git tools
+	'tpope/vim-fugitive',
+	'airblade/vim-gitgutter',
 
-  'VonHeikemen/lsp-zero.nvim';
-  
-  -- LSP Support
-  'neovim/nvim-lspconfig';
-  'williamboman/mason.nvim';
-  'williamboman/mason-lspconfig.nvim';
-  
-  -- Autocompletion
-  'hrsh7th/nvim-cmp';
-  'hrsh7th/cmp-buffer';
-  'hrsh7th/cmp-path';
-  'saadparwaiz1/cmp_luasnip';
-  'hrsh7th/cmp-nvim-lsp';
-  'hrsh7th/cmp-nvim-lua';
-  'hrsh7th/cmp-nvim-lsp-document-symbol';
-  
-  -- Snippets
-  'L3MON4D3/LuaSnip';
-  'rafamadriz/friendly-snippets';
+	-- LSP Support
+	'neovim/nvim-lspconfig',
+	'hrsh7th/cmp-nvim-lsp',
 
-  'nvim-lua/plenary.nvim';
-  'nvim-telescope/telescope.nvim';
-  'nvim-telescope/telescope-fzf-native.nvim';
+	-- Autocompletion + sources
+	'hrsh7th/nvim-cmp',
+	'hrsh7th/cmp-buffer',
+	'hrsh7th/cmp-path',
+	'hrsh7th/cmp-vsnip',
+	'hrsh7th/vim-vsnip',
+	'hrsh7th/vim-vsnip-integ',
+	'hrsh7th/cmp-nvim-lua',
+	'simrat39/symbols-outline.nvim',
 
-  -- Colors
-  'sainnhe/sonokai';
+	-- fuzzy stuff
+	'nvim-lua/plenary.nvim',
+	'nvim-telescope/telescope.nvim',
+	'nvim-telescope/telescope-fzf-native.nvim',
+
+	-- Colors
+	'sainnhe/sonokai',
 }
 
 vim.cmd('colorscheme sonokai')
@@ -43,10 +39,10 @@ vim.cmd('set clipboard+=unnamedplus')
 -- Folding
 vim.opt.foldmethod = "indent"
 
-local map = vim.api.nvim_set_keymap
-
 -- map the leader key
 vim.g.mapleader = ' '
+
+local map = vim.api.nvim_set_keymap
 
 options = { noremap = true }
 map('n', '<leader>h', ':nohlsearch<cr>', options)
@@ -57,7 +53,6 @@ map('n', '<C-J>', '<C-W><C-J>', options)
 map('n', '<C-K>', '<C-W><C-K>', options)
 map('n', '<C-L>', '<C-W><C-L>', options)
 map('n', '<C-H>', '<C-W><C-H>', options)
-
 
 -- Escape terminal
 map('t', '<Esc>', '<C-\\><C-n>', options)
@@ -71,23 +66,43 @@ vim.keymap.set('n', '<leader>fs', builtin.lsp_document_symbols, {})
 vim.keymap.set('n', '<leader>fS', builtin.lsp_dynamic_workspace_symbols, {})
 vim.keymap.set('n', '<leader>fr', builtin.lsp_references, {})
 
--- LSP the easy way
-local lsp = require('lsp-zero')
-lsp.preset('recommended')
-lsp.setup()
+-- LSP
+local cmp = require 'cmp'
+cmp.setup({
+	snippet = {
+		expand = function(args)
+			vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
+		end,
+	},
+	mapping = cmp.mapping.preset.insert({}),
+	sources = cmp.config.sources({
+		{ name = 'nvim_lsp' },
+		{ name = 'vsnip' },
+	}, {
+		{ name = 'buffer' },
+	})
+})
+local lsp_capabilities = require('cmp_nvim_lsp').default_capabilities()
 
--- srclnk = function (args)
--- 	local remote = vim.fn.systemlist("git remote get-url origin")[1]
--- 	local commit = vim.fn.systemlist("git rev-parse HEAD")[1]
--- 	local domain = vim.split(remote, '/')[3]
--- 	local project = vim.split(remote, '/')[4]
--- 	local repo = vim.split(remote, '/')[5]
--- 
--- 	vim.cmd [[
--- 		let @+=domain
--- 	]]
--- end
--- vim.keymap.set('n', 'sl', srclnk, {})
+on_attach = function(client, bufnr)
+	if client.supports_method("textDocument/formatting") then
+		vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
+		vim.api.nvim_create_autocmd("BufWritePost", {
+			group = augroup,
+			buffer = bufnr,
+			callback = function()
+				vim.lsp.buf.format()
+			end,
+		})
+	end
+end
+
+require 'lspconfig'.lua_ls.setup { on_attach = on_attach, capabilities = lsp_capabilities }
+require 'lspconfig'.rust_analyzer.setup { on_attach = on_attach, capabilities = lsp_capabilities }
+require 'lspconfig'.clangd.setup { on_attach = on_attach, capabilities = lsp_capabilities }
+
+require("symbols-outline").setup()
+vim.keymap.set('n', '<leader>o', ":SymbolsOutline<CR>", {})
 
 vim.cmd [[
 " Command to store link to current line in bitbucket UI in the system's
@@ -101,7 +116,7 @@ function! GetSourceLink() range
   let project=split(remote, '/')[-2]
   let repo=split(split(remote, '/')[-1], '\.')[0]
 
-  if domain ==# "git.kernel.org" 
+  if domain ==# "git.kernel.org"
     let @+=join(["https:/", giturls[domain], "linux/latest/source" , @%.'#L'.line('.')], "/")
   elseif domain ==# "github.com"
     let @+=join(["https:/", giturls[domain], project, repo, "tree/master", commit, @%.'#L'.a:firstline.'-'.'L'.a:lastline ], "/")
