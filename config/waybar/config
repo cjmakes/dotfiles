@@ -6,10 +6,8 @@
 	"pulseaudio",
 	"battery",
 	"network",
-	"custom/clock",
-	"custom/wl-gammarelay-temperature",
-	"custom/wl-gammarelay-brightness",
-	"custom/wl-gammarelay-gamma",
+	"clock",
+	"clock#UTC",
 	"tray"
 ],
 "sway/mode": {
@@ -36,32 +34,20 @@
 	]
 },
 "network": {
-	"interface": "wlp1s0",
 	"format-wifi": "{essid} ({signalStrength}%)   ",
 	"format-ethernet": "{ifname}: {ipaddr}/{cidr}",
 	"format-linked": "{ifname} (No IP)",
 	"format-disconnected": "Disconnected ⚠",
 	"format-alt": "{ifname}: {ipaddr}/{cidr}"
 },
-"custom/clock": {
-	"exec": "date \"+%H:%M \""
+"clock":{
+        "timezone": "America/Los_Angeles",
+        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+        "format-alt": "{:%Y-%m-%d}"
 },
-"custom/wl-gammarelay-temperature": {
-	"format": "{}  ",
-	"exec": "/home/conjones/.cargo/bin/wl-gammarelay-rs watch {t}",
-	"on-scroll-up": "busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateTemperature n +100",
-	"on-scroll-down": "busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateTemperature n -100"
-},
-"custom/wl-gammarelay-brightness": {
-	"format": "{}% ",
-	"exec": "/home/conjones/.cargo/bin/wl-gammarelay-rs watch {bp}",
-	"on-scroll-up": "busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateBrightness d +0.02",
-	"on-scroll-down": "busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateBrightness d -0.02"
-},
-"custom/wl-gammarelay-gamma": {
-	"format": "{}% γ",
-	"exec": "/home/conjones/.cargo/bin/wl-gammarelay-rs watch {g}",
-	"on-scroll-up": "busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateGamma d +0.02",
-	"on-scroll-down": "busctl --user -- call rs.wl-gammarelay / rs.wl.gammarelay UpdateGamma d -0.02"
+"clock#UTC":{
+        "timezone": "UTC",
+        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+        "format-alt": "{:%Y-%m-%d}"
 }
 }

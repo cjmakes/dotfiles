@@ -1,3 +1,9 @@
+# Make screensharing work
+exec_always dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
+
+# notificatoins
+exec_always mako
+
 ### Variables
 #
 # Logo key. Use Mod1 for Alt.
@@ -8,7 +14,7 @@ set $down j
 set $up k
 set $right l
 
-set $term alacritty
+set $term kitty
 
 font FiraCodeMono Medium 12
 
@@ -22,6 +28,7 @@ bindsym $mod+c exec rofi -show calc -modi calc -no-show-match -no-sort
 output * bg ~/.config/sway/wallpaper.png fill
 
 set $laptop eDP-1
+set $portable DP-1
 
 # Clamshel
 bindswitch --reload lid:on output $laptop disable

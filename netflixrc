@@ -1,0 +1,32 @@
+# Grab aws credentials for swordfish in aws prod
+creds(){
+	newt --app-type awscreds refresh -r arn:aws:iam::567395257996:role/SwordFishInstanceProfile
+}
+
+assume(){
+	# Assume the role and capture the output
+	CREDENTIALS=$(aws sts assume-role --role-arn "arn:aws:iam::$1:role/SwordFish" --role-session-name "$1")
+
+	# Use jq to parse the credentials and export them
+	export AWS_ACCESS_KEY_ID=$(echo $CREDENTIALS | jq -r '.Credentials.AccessKeyId')
+	export AWS_SECRET_ACCESS_KEY=$(echo $CREDENTIALS | jq -r '.Credentials.SecretAccessKey')
+	export AWS_SESSION_TOKEN=$(echo $CREDENTIALS | jq -r '.Credentials.SessionToken')
+}
+
+unassume(){
+	unset AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN
+}
+
+# Remove kubectl command, force kprod, ktest, klocal instead
+kubectl(){
+      echo "use kprod, ktest, or klocal"
+}
+kprod(){
+	~/.kube/bin/kubectl --context infraapi-prod $@
+}
+ktest(){
+	~/.kube/bin/kubectl --context infraapi-test $@
+}
+klocal(){
+	~/.kube/bin/kubectl --context kittykat $@
+}
