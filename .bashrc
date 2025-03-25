@@ -7,6 +7,9 @@ export PATH="~/bin:$HOME/go/bin/:$HOME/.cargo/bin:$PATH"
 export GOPATH=$HOME"/go"
 export EDITOR="nvim"
 
+# SSH Agent for yubikey
+export SSH_AUTH_SOCK="${XDG_RUNTIME_DIR}/yubikey-agent/yubikey-agent.sock"
+
 # fzf completion and keybinds
 if command -v fzf-share >/dev/null; then
   source "$(fzf-share)/key-bindings.bash"
@@ -15,3 +18,4 @@ fi
 
 alias vim="nvim"
 alias userctl="systemctl --user"
+alias gs="git status"

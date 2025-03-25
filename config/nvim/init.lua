@@ -12,8 +12,6 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
-	"savq/paq-nvim", -- Let Paq manage itself
-
 	-- Git tools
 	'tpope/vim-fugitive',
 	'airblade/vim-gitgutter',
@@ -47,8 +45,6 @@ require("lazy").setup({
 	'simrat39/symbols-outline.nvim',
 	'hrsh7th/cmp-emoji',
 	'kdheepak/cmp-latex-symbols',
-
-	'fatih/vim-go',
 
 	-- navigation
 	'nvim-lua/plenary.nvim',
@@ -134,33 +130,32 @@ cmp.setup({
 
 local lsp_capabilities = require('cmp_nvim_lsp').default_capabilities()
 
-local on_attach = function(client, bufnr)
-	if client.supports_method("textDocument/formatting") then
-		vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
-		vim.api.nvim_create_autocmd("BufWritePre", {
-			group = augroup,
-			buffer = bufnr,
-			callback = function()
-				vim.lsp.buf.format()
-			end,
-		})
-	end
-end
+vim.api.nvim_create_autocmd("LspAttach", {
+  group = vim.api.nvim_create_augroup("lsp", { clear = true }),
+  callback = function(args)
+    -- 2
+    vim.api.nvim_create_autocmd("BufWritePre", {
+      -- 3
+      buffer = args.buf,
+      callback = function()
+        -- 4 + 5
+        vim.lsp.buf.format {async = false, id = args.data.client_id }
+      end,
+    })
+  end
+})
 
 require 'lspconfig'.lua_ls.setup { on_attach = on_attach, capabilities = lsp_capabilities }
 require 'lspconfig'.gopls.setup { on_attach = on_attach, capabilities = lsp_capabilities }
 require 'lspconfig'.rust_analyzer.setup { on_attach = on_attach, capabilities = lsp_capabilities }
 require 'lspconfig'.clangd.setup { on_attach = on_attach, capabilities = lsp_capabilities }
-require 'lspconfig'.nil_ls.setup { on_attach = on_attach, capabilities = lsp_capabilities,
-	settings = { ['nil'] = { formatting = { command = { "nixpkgs-fmt" } } } },
-}
-require 'lspconfig'.nil_ls.setup { on_attach = on_attach, capabilities = lsp_capabilities }
+require("lspconfig").nil_ls.setup({ settings = { ['nil'] = { formatting = { command = { "nixfmt" }, }, }, }, })
 require 'lspconfig'.bashls.setup { on_attach = on_attach, capabilities = lsp_capabilities }
 require 'lspconfig'.jedi_language_server.setup { on_attach = on_attach, capabilities = lsp_capabilities }
 require 'lspconfig'.pyright.setup { on_attach = on_attach, capabilities = lsp_capabilities }
 require 'lspconfig'.eslint.setup { on_attach = on_attach, capabilities = lsp_capabilities }
 require 'lspconfig'.eslint.setup { on_attach = on_attach, capabilities = lsp_capabilities }
-require 'lspconfig'.tsserver.setup { on_attach = on_attach, capabilities = lsp_capabilities }
+require 'lspconfig'.ts_ls.setup { on_attach = on_attach, capabilities = lsp_capabilities }
 require 'lspconfig'.jsonls.setup { on_attach = on_attach, capabilities = lsp_capabilities, }
 
 

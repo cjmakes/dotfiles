@@ -14,7 +14,7 @@ set $down j
 set $up k
 set $right l
 
-set $term kitty
+set $term alacritty
 
 font FiraCodeMono Medium 12
 
